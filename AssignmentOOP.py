@@ -1,28 +1,58 @@
 #importing assests
-import abc
+
 
 #Adding base classes to Assignment
 
 
-#Abstract class
-class Game(metaclass=abc.ABCMeta):
-    #Adding abstract properties and methods
-    @abc.abstractproperty
-    def GameType(self):
-        pass
 
-    @abc.abstractmethod
+#Main Menu
+#Parent Class
+class Mastermind:
+    def play(self):
+
+        #######################################
+        #Text block for user-interface
+        print("Welcome to Mastermind!")
+        print("Developed by Adam Chandler")
+        print("COMP 1046 Object-Orientated Programming")
+        print("")
+        print("")
+        print("Select which Game you want to play")
+        print ("    (A) Original Mastermind for 2 players")
+        print ("    (B) Original Mastermind for 1 player")
+        print ("    (C) Matsermind44 for 2-4 players")
+        #########################################
+        
+        #########################################
+        #Add Exception Handling later
+        gameTypeChoice = input("Enter A, B or C to continue:")
+        if gameTypeChoice == "A":
+            Original()
+        elif gameTypeChoice == "B":
+            Original_AI()
+        elif gameTypeChoice == "C":
+            Mastermind44()
+        #To be created and added later
+        #else:
+            #raise InvalidChoice Error
+        #####################################
+    
     def GameQuit(self):
-        pass
+        quit()
+  
 
-
-#Abstract Children
-class Mastermind44(Game):
+#Child Classes
+class Mastermind44(Mastermind):
     pass
 
-class Mastermind(Game):
+
+class Original(Mastermind):
     pass
 
+class Original_AI(Mastermind):
+    pass
+
+#Game Classes
 class Board:
     pass
 
@@ -35,7 +65,7 @@ class CodePegs:
 class CodeCounters:
     pass
 
-#Super Class
+#Parent Class
 class Player:
     pass
 
