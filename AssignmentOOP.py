@@ -4,6 +4,36 @@
 #Adding base classes to Assignment
 
 
+#Game Classes
+class Board:
+    pass
+
+class KeyPegs:
+    pass
+
+class CodePegs:
+    pass
+
+class CodeCounters:
+    pass
+
+#Parent Class
+class Player:
+    def __init__(self, playerNumber, name):
+        self.playerNumber = playerNumber
+        self.name = name
+    
+
+
+#Child Classes
+class CodeMaker(Player):
+    def __init__(self, playerNumber, name):
+        super().__init__(playerNumber, name)
+
+
+class CodeBreaker(Player):
+    def __init__(self, playerNumber, name):
+        super().__init__(playerNumber, name)
 
 #Main Menu
 #Parent Class
@@ -26,10 +56,12 @@ class Mastermind:
         #########################################
         #Add Exception Handling later
         gameTypeChoice = input("Enter A, B or C to continue:")
+        gameTypeChoice = gameTypeChoice.upper()
+        
         if gameTypeChoice == "A":
             Original()
         elif gameTypeChoice == "B":
-            Original_AI()
+            Original_AI().play()
         elif gameTypeChoice == "C":
             Mastermind44()
         #To be created and added later
@@ -38,7 +70,7 @@ class Mastermind:
         #####################################
     
     def GameQuit(self):
-        quit()
+        print("Goodbye!")
   
 
 #Child Classes
@@ -50,30 +82,15 @@ class Original(Mastermind):
     pass
 
 class Original_AI(Mastermind):
-    pass
+    def play(self):
+        playerNumber = 1
+        name = input("Player " + str(playerNumber) + ": What is your name?")
+        CodeBreaker(playerNumber, name)
+    
+    def GameQuit(self):
+        print("Goodbye!")
 
-#Game Classes
-class Board:
-    pass
-
-class KeyPegs:
-    pass
-
-class CodePegs:
-    pass
-
-class CodeCounters:
-    pass
-
-#Parent Class
-class Player:
-    pass
-
-#Child Classes
-class CodeMaker(Player):
-    pass
-
-class CodeBreaker(Player):
-    pass
+m = Mastermind()
+m.play()
 
 
