@@ -1,18 +1,24 @@
 #importing assests
-
+import random
 
 #Adding base classes to Assignment
 
 
 #Game Classes
 class Board:
-    pass
+    def __init__(self, code):
+        currentCode = []
+        self.currentCode = currentCode
+        self.code = code
+    
+    def codeAdd(self, code):
+        self.currentCode.append(self.code)
 
 class KeyPegs:
     pass
 
 class CodePegs:
-    pass
+    codePegs = ["R", "B", "Y", "G", "l", "W"]
 
 class CodeCounters:
     pass
@@ -34,13 +40,19 @@ class CodeMaker(Player):
 class CodeBreaker(Player):
     def __init__(self, playerNumber, name):
         super().__init__(playerNumber, name)
-
+        print("Welcome "+ self.name + ". You can now start by guessing the code")
+    
+    def makeAttempt(self):
+            while Original_AI.attempt <= Original_AI.totalAttempts:
+                print("Enter your guess in the space below:")
+                print("Attempt #" + Original_AI.attempt)
+                guess = input("")
+    
+    
 #Main Menu
 #Parent Class
 class Mastermind:
     def play(self):
-
-        #######################################
         #Text block for user-interface
         print("Welcome to Mastermind!")
         print("Developed by Adam Chandler")
@@ -51,9 +63,7 @@ class Mastermind:
         print ("    (A) Original Mastermind for 2 players")
         print ("    (B) Original Mastermind for 1 player")
         print ("    (C) Matsermind44 for 2-4 players")
-        #########################################
-        
-        #########################################
+
         #Add Exception Handling later
         gameTypeChoice = input("Enter A, B or C to continue:")
         gameTypeChoice = gameTypeChoice.upper()
@@ -64,13 +74,14 @@ class Mastermind:
             Original_AI().play()
         elif gameTypeChoice == "C":
             Mastermind44()
+
         #To be created and added later
         #else:
             #raise InvalidChoice Error
-        #####################################
+
     
     def GameQuit(self):
-        print("Goodbye!")
+        pass
   
 
 #Child Classes
@@ -82,7 +93,18 @@ class Original(Mastermind):
     pass
 
 class Original_AI(Mastermind):
+    totalAttempts = 6
+    attempt = 1
     def play(self):
+
+        #Generating random code
+        index = 0
+        while index < 4:
+            codeColour = CodePegs.codePegs[random.randint(0, 5)]
+            Board.codeAdd(codeColour)
+            index = index +1
+
+        #Player name generation and prompt
         playerNumber = 1
         name = input("Player " + str(playerNumber) + ": What is your name?")
         CodeBreaker(playerNumber, name)
