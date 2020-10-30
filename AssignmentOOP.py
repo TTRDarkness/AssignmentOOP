@@ -12,10 +12,31 @@ class Board:
         #Adding the generated code to a dictionary
         Board.currentCode[position] = code
 
-    def codeCheck(self):
-        global feedback
+    def codeCheck(self, playerCode):
         feedback = []
+
         #Creating a method for checking the guesses
+        index = 1
+        k = 1
+        while index <= 4:
+            while k <=4:
+                if Board.currentCode[index] == playerCode[k]:
+                    if index == k:
+                        feedback.append("B")
+                        index = index +1
+                        k= k+1
+                    else:
+                        feedback.append("W")
+                        index = index+1
+                        k = 1
+                else:
+                    k=k+1
+            k = 1
+            index = index +1
+        if feedback == []:
+            return "No feedback to give"
+        else:
+            return feedback
 
 
 
@@ -64,9 +85,9 @@ class CodeBreaker(Player):
                 playerCode[index2+1] = playerGuess[index2]
                 index2 = index2+1
             print(playerCode)
-            #Board.codeCheck(self)
+            print(Board().codeCheck(playerCode))
             Original_AI.attempt = Original_AI.attempt + 1
-            #print(feedback)
+            
 
     
     
