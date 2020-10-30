@@ -6,40 +6,36 @@ import random
 
 #Game Classes
 class Board:
-    currentCode = {}
+    currentCode = []
     
-    def codeAdd(self, code, position):
+    def codeAdd(self, code):
         #Adding the generated code to a dictionary
-        Board.currentCode[position] = code
+        Board.currentCode.append(code)
 
     def codeCheck(self, playerCode):
         feedback = []
-
-        #Creating a method for checking the guesses
-        index = 1
-        k = 1
-        while index <= 4:
-            while k <=4:
-                if Board.currentCode[index] == playerCode[k]:
+        index = 0
+        k = 0
+        while k <=3:
+            while index <= 3:
+                flag = 0
+                if playerCode[k] == Board.currentCode[index]:
                     if index == k:
                         feedback.append("B")
-                        index = index +1
-                        k= k+1
+                        index = 4
+                        flag = 1
                     else:
                         feedback.append("W")
-                        index = index+1
-                        k = 1
+                        index = 4
+                        flag = 1
                 else:
-                    k=k+1
-            k = 1
-            index = index +1
-        if feedback == []:
-            return "No feedback to give"
-        else:
-            return feedback
-
-
-
+                    index = index+1     
+            if flag == 0:
+                feedback.append("")
+            k = k+1
+            index = 0
+        return feedback
+        
 
 
 class KeyPegs:
@@ -76,20 +72,11 @@ class CodeBreaker(Player):
             print("Enter your guess in the space below:")
             print("Attempt #" + str(Original_AI.attempt))
             guess = input("")
-            playerGuess = list(guess)
-            index2 = 0
-
-            #Second loop to convert the user input into a dictionary
-            playerCode = {}
-            while index2 < len(playerGuess):
-                playerCode[index2+1] = playerGuess[index2]
-                index2 = index2+1
-            print(playerCode)
-            print(Board().codeCheck(playerCode))
+            guess = guess.upper()
+            playerCode = list(guess)
             Original_AI.attempt = Original_AI.attempt + 1
-            
+            print(Board().codeCheck(playerCode))
 
-    
     
 #Main Menu
 #Parent Class
@@ -121,7 +108,9 @@ class Mastermind:
         #else:
             #raise InvalidChoice Error
 
-    
+    def GameWin(self):
+        print ("Well done!")
+        print ("You cracked the code in " + str(Original_AI.attempt) + " attempts")
     def GameQuit(self):
         pass
   
@@ -143,9 +132,9 @@ class Original_AI(Mastermind):
         index = 1
         while index <= 4:
             codeColour = CodePegs.codePegs[random.randint(0, 5)]
-            Board.codeAdd(self, codeColour, index)
+            Board().codeAdd(codeColour)
             index = index +1
-        #Remove this before final test
+
         print(Board.currentCode)
 
         #Player name generation and prompt
