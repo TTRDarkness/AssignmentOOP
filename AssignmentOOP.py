@@ -1,40 +1,71 @@
 #importing assests
 import random
+import sys
+
+#Custom Exceptions
+class InvalidChoiceError(Exception):
+    pass
+
+class InvalidGuessError(Exception):
+    pass
 
 #Adding base classes to Assignment
 
 
 #Game Classes
 class Board:
-    currentCode = []
+    def BoardClear(self):
+        global currentCode
+        currentCode = []
+        
+
     
     def codeAdd(self, code):
-        #Adding the generated code to a dictionary
-        Board.currentCode.append(code)
+        #Adding the generated code to a list
+        currentCode.append(code)
+    
 
     def codeCheck(self, playerCode):
         feedback = []
+
+        #Loops for setting up the feedback
         index = 0
         k = 0
         while k <=3:
             while index <= 3:
                 flag = 0
-                if playerCode[k] == Board.currentCode[index]:
+                if playerCode[k] == currentCode[index]:
                     if index == k:
                         feedback.append("B")
                         index = 4
                         flag = 1
                     else:
-                        feedback.append("W")
-                        index = 4
-                        flag = 1
+
+                        #Checking for repeats in the code
+                        index = k
+                        if playerCode[k] == currentCode[index]:
+                            feedback.append("B")
+                            index = 4
+                            flag = 1
+                        else:
+                            feedback.append("W")
+                            index = 4
+                            flag =1
                 else:
                     index = index+1     
             if flag == 0:
                 feedback.append("")
             k = k+1
             index = 0
-        return feedback
+
+        #Returning the results
+        if feedback == ["", "", "", ""]:
+            return "No feedback Given"
+        elif feedback == ["B", "B", "B", "B"]:
+            Original_AI.GameWin(self)
+
+        else: 
+            return feedback
         
 
 
@@ -71,17 +102,22 @@ class CodeBreaker(Player):
         while Original_AI.attempt <= Original_AI.totalAttempts:
             print("Enter your guess in the space below:")
             print("Attempt #" + str(Original_AI.attempt))
+
             guess = input("")
             guess = guess.upper()
             playerCode = list(guess)
-            Original_AI.attempt = Original_AI.attempt + 1
-            print(Board().codeCheck(playerCode))
+            if len(playerCode) < 4:
+                raise InvalidGuessError("A four digit code is required")
+            else:
+                print(Board().codeCheck(playerCode))
+                Original_AI.attempt = Original_AI.attempt + 1
 
     
 #Main Menu
 #Parent Class
 class Mastermind:
     def play(self):
+        Board().BoardClear()
         #Text block for user-interface
         print("Welcome to Mastermind!")
         print("Developed by Adam Chandler")
@@ -93,7 +129,7 @@ class Mastermind:
         print ("    (B) Original Mastermind for 1 player")
         print ("    (C) Matsermind44 for 2-4 players")
 
-        #Add Exception Handling later
+
         gameTypeChoice = input("Enter A, B or C to continue:")
         gameTypeChoice = gameTypeChoice.upper()
         
@@ -103,14 +139,13 @@ class Mastermind:
             Original_AI().play()
         elif gameTypeChoice == "C":
             Mastermind44()
+        else:
+            raise InvalidChoiceError("Only select A, B or C")
 
-        #To be created and added later
-        #else:
-            #raise InvalidChoice Error
 
     def GameWin(self):
-        print ("Well done!")
-        print ("You cracked the code in " + str(Original_AI.attempt) + " attempts")
+        pass
+
     def GameQuit(self):
         pass
   
@@ -130,12 +165,13 @@ class Original_AI(Mastermind):
 
         #Generating random code
         index = 1
+        
         while index <= 4:
             codeColour = CodePegs.codePegs[random.randint(0, 5)]
             Board().codeAdd(codeColour)
             index = index +1
 
-        print(Board.currentCode)
+        print(currentCode)
 
         #Player name generation and prompt
         playerNumber = 1
@@ -146,6 +182,26 @@ class Original_AI(Mastermind):
     
     def GameQuit(self):
         print("Goodbye!")
+        sys.exit(0)
+
+    def GameWin(self):
+        print ("")
+        print ("Well done!")
+        print ("You cracked the code in " + str(Original_AI.attempt) + " attempt(s)")
+
+        #Add exception handling later to this
+        playAgain = input ("Would you like to play again? (y/n)")
+        playAgain = playAgain.upper()
+        if playAgain == "Y":
+            Original_AI.attempt = 1
+            Board().BoardClear()
+            Mastermind().play()
+        elif playAgain == "N":
+            Original_AI().GameQuit()
+        else:
+            raise InvalidChoiceError("Only y or n is accepted")
+
+    
 
 m = Mastermind()
 m.play()
