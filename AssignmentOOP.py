@@ -9,6 +9,10 @@ class InvalidChoiceError(Exception):
 class InvalidGuessError(Exception):
     pass
 
+#Non class functions
+def StringConverter(org_list, seperator=' '):
+    return seperator.join(org_list)
+
 #Adding base classes to Assignment
 
 
@@ -17,7 +21,6 @@ class Board:
     def BoardClear(self):
         global currentCode
         currentCode = []
-        
 
     
     def codeAdd(self, code):
@@ -57,20 +60,16 @@ class Board:
                 feedback.append("")
             k = k+1
             index = 0
+        #Converts list to string
+        feedbackStr = StringConverter(feedback)
 
         #Returning the results
-        if feedback == ["", "", "", ""]:
+
+        if feedbackStr == "":
             return "No feedback Given"
-        elif feedback == ["B", "B", "B", "B"]:
-            Original_AI.GameWin(self)
-
-        else: 
-            return feedback
+        else:
+            return feedbackStr
         
-
-
-class KeyPegs:
-    pass
 
 class CodePegs:
     #Code peg list setup
@@ -94,23 +93,20 @@ class CodeMaker(Player):
 class CodeBreaker(Player):
     def __init__(self, playerNumber, name):
         super().__init__(playerNumber, name)
-        print("Welcome "+ self.name + ". You can now start by guessing the code")
     
     def makeAttempt_AI(self):
-        global playerCode
-        #First loop to go through all of the attempts
-        while Original_AI.attempt <= Original_AI.totalAttempts:
-            print("Enter your guess in the space below:")
-            print("Attempt #" + str(Original_AI.attempt))
-
-            guess = input("")
-            guess = guess.upper()
-            playerCode = list(guess)
-            if len(playerCode) < 4:
-                raise InvalidGuessError("A four digit code is required")
+        guess = input("")
+        guess = guess.upper()
+        playerCode = list(guess)
+        if len(playerCode) < 4:
+            raise InvalidGuessError("A four digit code is required")
+        else:
+            playerFeedback = Board().codeCheck(playerCode)
+            if playerFeedback == "B B B B":
+                Original_AI().GameWin()
             else:
-                print(Board().codeCheck(playerCode))
-                Original_AI.attempt = Original_AI.attempt + 1
+                print(playerFeedback)
+            Original_AI.attempt = Original_AI.attempt + 1
 
     
 #Main Menu
@@ -132,7 +128,6 @@ class Mastermind:
 
         gameTypeChoice = input("Enter A, B or C to continue:")
         gameTypeChoice = gameTypeChoice.upper()
-        
         if gameTypeChoice == "A":
             Original()
         elif gameTypeChoice == "B":
@@ -141,6 +136,7 @@ class Mastermind:
             Mastermind44()
         else:
             raise InvalidChoiceError("Only select A, B or C")
+
 
 
     def GameWin(self):
@@ -170,13 +166,18 @@ class Original_AI(Mastermind):
             codeColour = CodePegs.codePegs[random.randint(0, 5)]
             Board().codeAdd(codeColour)
             index = index +1
-
         print(currentCode)
 
         #Player name generation and prompt
         playerNumber = 1
         name = input("Player " + str(playerNumber) + ": What is your name?")
-        CodeBreaker(playerNumber, name).makeAttempt_AI()
+        print("Welcome "+ name + ". You can now start by guessing the code")
+        while Original_AI().attempt <= Original_AI().totalAttempts:
+            print("Attempt #" + str(Original_AI().attempt))
+            print("Enter your guess in the space below:")
+            print("")
+            CodeBreaker(playerNumber, name).makeAttempt_AI()
+            Original_AI().attempt = Original_AI().attempt + 1
 
         
     
@@ -189,7 +190,6 @@ class Original_AI(Mastermind):
         print ("Well done!")
         print ("You cracked the code in " + str(Original_AI.attempt) + " attempt(s)")
 
-        #Add exception handling later to this
         playAgain = input ("Would you like to play again? (y/n)")
         playAgain = playAgain.upper()
         if playAgain == "Y":
@@ -205,5 +205,6 @@ class Original_AI(Mastermind):
 
 m = Mastermind()
 m.play()
+
 
 
