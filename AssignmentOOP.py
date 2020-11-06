@@ -125,6 +125,10 @@ class CodeBreaker(Player):
         else:
             playerFeedback = Board().codeCheck(playerCode)
             if playerFeedback == "BBBB":
+                print ("")
+                print ("Well done!")
+                print ("You cracked the code in " + str(Original.attempt) + " attempt(s)")
+
                 Original_AI().GameWin()
             else:
                 print(playerFeedback)
@@ -139,6 +143,9 @@ class CodeBreaker(Player):
         else:
             playerFeedback = Board().codeCheck(playerCode)
             if playerFeedback == "BBBB":
+                print ("")
+                print ("Well done!")
+                print ("You cracked the code in " + str(Original.attempt) + " attempt(s)")
                 Original().GameWin()
             else:
                 print(playerFeedback)
@@ -234,6 +241,11 @@ class Original(Mastermind):
                 print("")
                 CodeBreaker(playerNumber, name).makeAttempt()
                 Original().attempt = Original().attempt + 1
+                if Original().attempt == Original().totalAttempts:
+                    print("You were unable to break the code in 12 attempts!")
+                    print("You lose!")
+                    print("")
+                    Original().GameWin()
         else:
             raise InvalidCodeError("Codes do not match")
             
@@ -242,10 +254,6 @@ class Original(Mastermind):
         sys.exit(0)
 
     def GameWin(self):
-        print ("")
-        print ("Well done!")
-        print ("You cracked the code in " + str(Original.attempt) + " attempt(s)")
-
         playAgain = input ("Would you like to play again? (y/n)")
         playAgain = playAgain.upper()
         if playAgain == "Y":
@@ -284,16 +292,17 @@ class Original_AI(Mastermind):
             print("")
             CodeBreaker(playerNumber, name).makeAttempt_AI()
             Original_AI().attempt = Original_AI().attempt + 1
+            if Original().attempt == Original().totalAttempts:
+                print("You were unable to break the code in 12 attempts!")
+                print("You lose!")
+                print("")
+                Original().GameWin()
 
     def GameQuit(self):
         print("Goodbye!")
         sys.exit(0)
 
     def GameWin(self):
-        print ("")
-        print ("Well done!")
-        print ("You cracked the code in " + str(Original_AI.attempt) + " attempt(s)")
-
         playAgain = input ("Would you like to play again? (y/n)")
         playAgain = playAgain.upper()
         if playAgain == "Y":
