@@ -4,7 +4,6 @@ import sys
 import os
 
 
-
 #Custom Exceptions
 class InvalidChoiceError(Exception):
     pass
@@ -79,7 +78,7 @@ class Board:
 
         #Returning the results
 
-        if feedbackStr == "":
+        if feedbackStr == "    ":
             return "No feedback Given"
         else:
             return feedbackStr
@@ -150,6 +149,18 @@ class CodeBreaker(Player):
 #Parent Class
 class Mastermind:
     def play(self):
+        print ("Would you like to")
+        print ("(p)lay")
+        print("(q)uit")
+        print("")
+        playChoice = input("")
+        playChoice = playChoice.upper()
+        if  playChoice == "P":
+            pass
+        elif playChoice == "Q":
+            Mastermind.GameQuit
+        else:
+            raise InvalidChoiceError("Please choice either play or quit")
         Board().BoardClear()
         #Text block for user-interface
         print("Welcome to Mastermind!")
@@ -160,7 +171,7 @@ class Mastermind:
         print("Select which Game you want to play")
         print ("    (A) Original Mastermind for 2 players")
         print ("    (B) Original Mastermind for 1 player")
-        print ("    (C) Matsermind44 for 2-4 players")
+        print ("    (C) Matsermind44 for 2-4 players (Not Working)")
 
 
         gameTypeChoice = input("Enter A, B or C to continue:")
@@ -178,7 +189,8 @@ class Mastermind:
         pass
 
     def GameQuit(self):
-        pass
+        print("Goodbye!")
+        sys.exit(0)
   
 
 #Child Classes
@@ -293,8 +305,6 @@ class Original_AI(Mastermind):
             Original().GameQuit()
         else:
             raise InvalidChoiceError("Only y or n is accepted")
-
-    
 
 m = Mastermind()
 m.play()
