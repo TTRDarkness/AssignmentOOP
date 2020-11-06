@@ -1,49 +1,52 @@
-#importing assests
 import random
 import sys
 import os
 
 
-#Custom Exceptions
 class InvalidChoiceError(Exception):
+    """Custom Exception for game selection"""
     pass
 
 class InvalidGuessError(Exception):
+    """Custom Exception for guess attempts made by the CodeBreaker"""
     pass
 
 class InvalidCodeError(Exception):
+    """Custom Exception for code made by the CodeMaker"""
     pass
 
-#Non class functions
 def StringConverter(org_list, seperator=''):
+    """Function that allows lists to be converted to strings
+    org_list is the list that is to be converted """
     return seperator.join(org_list)
 
 def ScreenClear():
-    #clear function that works on Mac, Linux and Windows
+    """Allows the screen to be cleared between players and after each game
+    takes no arguments """
     if os.name == 'posix':
       _ = os.system('clear')
     else:
         _ = os.system("cls")
 
-#Adding base classes to Assignment
 
-
-#Game Classes
 class Board:
+    """The Board stores the current code and runs the feedback"""
     def BoardClear(self):
+        """This function takes no paramters and clears the current code list"""
         global currentCode
         currentCode = []
 
     
     def codeAdd(self, code):
-        #Adding the generated code to a list
+        """This function adds code to the current code, it takes a single parameter of code """
+
         currentCode.append(code)
     
 
     def codeCheck(self, playerCode):
+        """This function takes a single parameter of playerCode and checks if the code matches the current code on the board
+        it will then display feedback to the screen depending on the colour and position of the guess made by the CodeBreaker"""
         feedback = []
-
-        #Loops for setting up the feedback
         index = 0
         k = 0
         while k <=3:
@@ -55,8 +58,6 @@ class Board:
                         index = 4
                         flag = 1
                     else:
-
-                        #Checking for repeats in the code
                         index = k
                         if playerCode[k] == currentCode[index]:
                             feedback.append("B")
@@ -72,11 +73,9 @@ class Board:
                 feedback.append(" ")
             k = k+1
             index = 0
-        #Converts list to string
 
         feedbackStr = StringConverter(feedback)
 
-        #Returning the results
 
         if feedbackStr == "    ":
             return "No feedback Given"
@@ -85,24 +84,23 @@ class Board:
         
 
 class CodePegs:
-    #Code peg list setup
+    """This class creates a list that is accessed by the random code generation is the Original_AI Class"""
     codePegs = ["R", "G", "L", "Y", "B", "W"] 
 
-class CodeCounters:
-    pass
 
-#Parent Class
 class Player:
+    """This is a parent class of both CodeBreaker and CodeMaker, two parameters must be passed PlayerNumber and name"""
     def __init__(self, playerNumber, name):
         self.playerNumber = playerNumber
         self.name = name
-    
-#Child Classes
+
 class CodeMaker(Player):
+    """This class is responsible for the generation of the code in Original"""
     def __init__(self, playerNumber, name):
         super().__init__(playerNumber, name)
 
     def MakeCode(self):
+        """This function allows the CodeMaker to create the code that the CodeBreaker will be trying to crack"""
         codeGen = input("")
         if len(codeGen) < 4:
             raise InvalidCodeError("Code must be 4 digits long.")
@@ -113,10 +111,12 @@ class CodeMaker(Player):
 
 
 class CodeBreaker(Player):
+    """This class is responsible for the breaking of the code in both Original and Original_AI"""
     def __init__(self, playerNumber, name):
         super().__init__(playerNumber, name)
     
     def makeAttempt_AI(self):
+        """This allows the CodeBreaker to make attempts and crack the code in Original_AI"""
         guess = input("")
         guess = guess.upper()
         playerCode = list(guess)
@@ -135,6 +135,7 @@ class CodeBreaker(Player):
             Original_AI.attempt = Original_AI.attempt + 1
 
     def makeAttempt(self):
+        """This allows the CodeBreaker to make attempts and crack the code in Original"""
         guess = input("")
         guess = guess.upper()
         playerCode = list(guess)
@@ -151,11 +152,11 @@ class CodeBreaker(Player):
                 print(playerFeedback)
             Original.attempt = Original.attempt + 1
 
-    
-#Main Menu
-#Parent Class
+
 class Mastermind:
+    """This Class is where the game is played and is a parent to both Original and Original_AI"""
     def play(self):
+        """This function allows the user to select which game mode is going to be played"""
         print ("Would you like to")
         print ("(p)lay")
         print("(q)uit")
@@ -169,7 +170,7 @@ class Mastermind:
         else:
             raise InvalidChoiceError("Please choice either play or quit")
         Board().BoardClear()
-        #Text block for user-interface
+
         print("Welcome to Mastermind!")
         print("Developed by Adam Chandler")
         print("COMP 1046 Object-Orientated Programming")
@@ -188,7 +189,7 @@ class Mastermind:
         elif gameTypeChoice == "B":
             Original_AI().play()
         elif gameTypeChoice == "C":
-            Mastermind44().play()
+            sys.exit(0)
         else:
             raise InvalidChoiceError("Only select A, B or C")
 
@@ -196,20 +197,19 @@ class Mastermind:
         pass
 
     def GameQuit(self):
+        """This ends the game and exits the program"""
         print("Goodbye!")
         sys.exit(0)
-  
 
-#Child Classes
-class Mastermind44(Mastermind):
-    pass
 
 
 class Original(Mastermind):
+    """This class is where the 2 Player version of mastermind is played"""
     totalAttempts = 12
     attempt = 1
     def play(self):
-        #Setting up the code maker
+        """This function instantiates both the CodeMaker and CodeBreaker classes, allowing the game to be played"""
+
         playerNumber = 1
         name = input("Player " + str(playerNumber) + ": What is your name?")
         print ("Welcome " + name + ". You can now generate the code. Please enter below a 4 letter combination of [B]lack, B[l]ue, [Y]ellow, [G]reen, [W]hite, [R]ed")
@@ -219,18 +219,18 @@ class Original(Mastermind):
 
         print("Enter the same code again")
         codeConfirm = CodeMaker(playerNumber, name).MakeCode()
-        #checking if the codes match
+
         if codeInit == codeConfirm:
             for index in range(0, len(codeConfirm)):
                 Board().codeAdd(codeConfirm[index])
 
             print(currentCode)
             print("code stored successfully")
-            #clearing the screen for when player 2 must guess
+
 
             input("Press any key to clear code and continue")
             ScreenClear()
-            #setting up player 2
+
             playerNumber = 2
             name = input("Player " + str(playerNumber) + ": What is your name?")
             print("")
@@ -250,10 +250,12 @@ class Original(Mastermind):
             raise InvalidCodeError("Codes do not match")
             
     def GameQuit(self):
+        """This ends the game and exits the program"""
         print("Goodbye!")
         sys.exit(0)
 
     def GameWin(self):
+        """This function allows the game to be played multiple times without the system rebooting"""
         playAgain = input ("Would you like to play again? (y/n)")
         playAgain = playAgain.upper()
         if playAgain == "Y":
@@ -269,11 +271,11 @@ class Original(Mastermind):
 
 
 class Original_AI(Mastermind):
+    """This class is where the 1 Player version of mastermind is played"""
     totalAttempts = 12
     attempt = 1
     def play(self):
-
-        #Generating random code
+        """This function instantiates the CodeBreaker and generates the code, allowing the game to be played"""
         index = 1
         
         while index <= 4:
@@ -281,7 +283,7 @@ class Original_AI(Mastermind):
             Board().codeAdd(codeColour)
             index = index +1
 
-        #Player name generation and prompt
+
         playerNumber = 1
         name = input("Player " + str(playerNumber) + ": What is your name?")
         print("")
@@ -299,10 +301,12 @@ class Original_AI(Mastermind):
                 Original().GameWin()
 
     def GameQuit(self):
+        """This ends the game and exits the program"""
         print("Goodbye!")
         sys.exit(0)
 
     def GameWin(self):
+        """This function allows the game to be played multiple times without the system rebooting"""
         playAgain = input ("Would you like to play again? (y/n)")
         playAgain = playAgain.upper()
         if playAgain == "Y":
