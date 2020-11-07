@@ -1,6 +1,7 @@
 import random
 import sys
 import os
+import abc
 
 
 class InvalidChoiceError(Exception):
@@ -88,8 +89,9 @@ class CodePegs:
     codePegs = ["R", "G", "L", "Y", "B", "W"] 
 
 
-class Player:
+class Player(metaclass = abc.ABCMeta):
     """This is a parent class of both CodeBreaker and CodeMaker, two parameters must be passed PlayerNumber and name"""
+    @abc.abstractmethod
     def __init__(self, playerNumber, name):
         self.playerNumber = playerNumber
         self.name = name
